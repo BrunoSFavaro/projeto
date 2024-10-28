@@ -8,6 +8,13 @@ tasks = ["foo", "bar", "baz"]
 # Create your views here.
 
 def index(request):
+
+    # Check if there already exists a "tasks" key in our session 
+    if "tasks" not in request.session:
+
+        # If not, create a new list 
+        request.session["tasks"] = []
+
     return render(request, "tasks/index.html", {
         "tasks": tasks
     })
@@ -28,7 +35,7 @@ def add(request):
             task = form.cleaned_data["task"]
 
             # Add the new task to our list of tasks 
-            tasks.append(task)
+            request.session["tasks"] += [task]
 
             # Redirect user to list of tasks 
             return HttpResponseRedirect(reverse("tasks:index"))
