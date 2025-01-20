@@ -36,8 +36,20 @@ function add_post(contents) {
     // Create new post
     const post = document.createElement('div');
     post.className = 'post';
-    post.innerHTML = contents;
+    post.innerHTML = `${contents} <button class="hide">Hide</button>`;
 
     // Add post to DOM
     document.querySelector('#posts').append(post);
+
+    document.addEventListener('click', event => {
+        const element = event.target;
+
+        if (element.className == 'hide') {
+            element.parentElement.style.animationPlayState = 'running';
+            element.parentElement.addEventListener('animationed', () => {
+                element.parentElement.remove();
+            });
+        }
+    });
 };
+
