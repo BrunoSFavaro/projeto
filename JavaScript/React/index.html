@@ -6,24 +6,82 @@
   <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <title>Document</title>
+  <title>Math Game</title>
+
+  <style>
+    #app {
+      text-align: center;
+      font-family: sans-serif;
+    }
+
+    #problem {
+      font-size: 72px;
+    }
+
+    #winner {
+      font-size: 72px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
 
   <script type="text/babel">
-    function Hello(props) {
-      return (
-        <h1>Hello, {props.name}!</h1>
-      );
-    }
+    function App() {
+      const [state, setState] = React.useState({
+        num1: Math.ceil(Math.random() * 10),
+        num2: Math.ceil(Math.random() * 10),
+        response: "",
+        score: 0
+      });
 
-    function App(props) {
+      function updateResponse(event) {
+        setState({
+          ...state,
+          response: event.target.value
+        });
+      }
+
+      function inputKeyPress(event) {
+        if (event.key === "Enter") {
+          const answer = parseInt(state.response, 10);
+          if (answer === state.num1 + state.num2) {
+            // User got the question right
+            setState({
+              ...state,
+              score: state.score + 1,
+              response: "",
+              num1: Math.ceil(Math.random() * 10),
+              num2: Math.ceil(Math.random() * 10)
+            });
+          } else {
+            // User got the question wrong
+            setState({
+              ...state,
+              score: state.score - 1,
+              response: ""
+            });
+          }
+        }
+      }
+
+      if (state.score === 10) {
+        return <div id="winner">You won!</div>;
+      }
+
       return (
         <div>
-          <Hello name="Harry" />
-          <Hello name="Ron" />
-          <Hello name="Hermione" />
+          <div id="problem">
+            {state.num1} + {state.num2}
+          </div>
+          <input
+            type="number"
+            value={state.response}
+            onChange={updateResponse}
+            onKeyPress={inputKeyPress}
+          />
+          <div>Score: {state.score}</div>
         </div>
       );
     }
